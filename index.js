@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
+import dotenv from 'dotenv';
+
+dotenv.config()
 
 const app = express();
 

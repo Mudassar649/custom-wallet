@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ROLES = ["adveriser", "content_creator", "super_admin"];
+const ROLES = ["advertiser", "content_creator", "super_admin"];
 
 const { Schema, model } = mongoose;
 

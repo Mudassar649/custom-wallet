@@ -3,7 +3,7 @@ import Campaign from '../models/Campaign.js';
 import CampaignApplication from '../models/CampaignApplication.js';
 import ContentSubmission from '../models/ContentSubmission.js';
 import Wallet from '../models/Wallet.js';
-import Transaction from '../models/rransaction.js';
+import Transaction from '../models/Transaction.js';
 import mongoose from 'mongoose';
 
 export const createCampaign = async(req, res) => {

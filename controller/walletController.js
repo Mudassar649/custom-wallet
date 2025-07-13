@@ -1,7 +1,12 @@
 import Wallet  from '../models/Wallet.js';
 import User from '../models/User.js';
 import Transaction from '../models/Transaction.js';
-import stripe from 'stripe';
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const getWallet = async (req, res) => {
     try {
@@ -58,12 +63,17 @@ export const createDepositIntent = async (req, res) => {
             amount: Math.round(amount * 100), // Convert to cents
             currency: currency,
             customer: stripeCustomerId,
+            payment_method: 'pm_card_visa',
             payment_method_types: payment_method === 'pix' ? ['pix'] : ['card'],
             metadata: {
                 userId: userId.toString(),
                 type: 'wallet_deposit'
             }
         });
+
+        console.log("paymentIntentId******", paymentIntent.id)
+        console.log("paymentIntentEvent******", paymentIntent.status)
+        
         
         // Create transaction record
         const transaction = new Transaction({
@@ -90,8 +100,12 @@ export const createDepositIntent = async (req, res) => {
 export const confirmDeposit = async (req, res) => {
     try {
         const { payment_intent_id } = req.body;
+
+        await stripe.paymentIntents.confirm(payment_intent_id);
         
         const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+
+        console.log("payment status*********: ", paymentIntent.status)
         
         if (paymentIntent.status === 'succeeded') {
             const transaction = await Transaction.findOne({ stripe_payment_intent_id: payment_intent_id });
@@ -110,7 +124,7 @@ export const confirmDeposit = async (req, res) => {
             
             // Update transaction
             transaction.status = 'completed';
-            transaction.stripe_transaction_id = paymentIntent.charges.data[0]?.id;
+            transaction.stripe_transaction_id = paymentIntent?.id;
             await transaction.save();
             
             res.json({

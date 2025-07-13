@@ -7,7 +7,7 @@ import {
     respondToApplication,
     submitContent,
     reviewContent
-} from '../controllers/campaignController.js';
+} from '../controller/campaignController.js';
 import { authenticateToken, requireAdvertiser, requireContentCreator } from '../middleware/auth.js';
 
 const router = express.Router();
